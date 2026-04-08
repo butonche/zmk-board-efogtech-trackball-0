@@ -12,10 +12,16 @@
 #include <zmk/event_manager.h>
 #include <zephyr/device.h>
 #include <zephyr/pm/device.h>
+#include <zephyr/input/input.h>
 
 #include "zephyr/bluetooth/bluetooth.h"
 #include "zmk/endpoints.h"
 #include "zmk/settings.h"
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT) && !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+#include <drivers/input_processor.h>
+#include <dt-bindings/zmk/p2sm.h>
+#endif
 
 #define DT_DRV_COMPAT zmk_endgame
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -148,3 +154,35 @@ static int usb_conn_chg(const zmk_event_t *eh) {
 ZMK_SUBSCRIPTION(board_root, zmk_usb_conn_state_changed);
 ZMK_LISTENER(board_root, usb_conn_chg)
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
+
+/*
+ * Sensor-to-mixer bridge for split peripheral builds.
+ *
+ * On non-split (standalone) builds, zmk,input-listener nodes feed PAW3395
+ * events into the mixer via input-processors. But input-listeners are
+ * compiled out on split peripherals (ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL).
+ *
+ * This bridge registers raw Zephyr input callbacks for both sensors and
+ * calls the mixer's input-processor handle_event API directly, restoring
+ * the data path: PAW3395 → mixer → input-split → BLE.
+ */
+#if IS_ENABLED(CONFIG_ZMK_SPLIT) && !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && \
+    DT_NODE_HAS_STATUS(DT_NODELABEL(trackball_primary), okay) && \
+    DT_NODE_HAS_STATUS(DT_NODELABEL(trackball_secondary), okay)
+
+static const struct device *mixer = DEVICE_DT_GET(DT_NODELABEL(zip_2s_mixer));
+
+static void sensor1_cb(struct input_event *evt) {
+    struct zmk_input_processor_state state = {0};
+    zmk_input_processor_handle_event(mixer, evt, INPUT_MIXER_SENSOR1, 0, &state);
+}
+
+static void sensor2_cb(struct input_event *evt) {
+    struct zmk_input_processor_state state = {0};
+    zmk_input_processor_handle_event(mixer, evt, INPUT_MIXER_SENSOR2, 0, &state);
+}
+
+INPUT_CALLBACK_DEFINE(DEVICE_DT_GET(DT_NODELABEL(trackball_primary)), sensor1_cb);
+INPUT_CALLBACK_DEFINE(DEVICE_DT_GET(DT_NODELABEL(trackball_secondary)), sensor2_cb);
+
+#endif
