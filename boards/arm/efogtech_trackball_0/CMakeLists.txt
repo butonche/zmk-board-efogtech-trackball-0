@@ -1,5 +1,6 @@
 zephyr_library()
 zephyr_library_sources(efogtech_trackball_0.c)
 zephyr_library_include_directories(${ZEPHYR_BASE}/drivers)
+target_sources(app PRIVATE ${CMAKE_CURRENT_LIST_DIR}/input_processor_drop_zero.c)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.")
