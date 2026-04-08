@@ -56,9 +56,7 @@
 			compatible = "zmk,input-split";
 			reg = <0>;
 			device = <&zip_2s_mixer>;
-			input-processors = <&zip_scroll_scaler 1 10>,
-			                   <&zip_pointer_accel>, <&zip_scroll_accel>,
-			                   <&zip_axis_clamper>,
+			input-processors = <&zip_axis_clamper>,
 			                   <&zip_ble_report_rate_limit>;
 		};
 	};
