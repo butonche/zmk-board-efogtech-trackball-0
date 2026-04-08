@@ -1,0 +1,9 @@
+description: Drop zero-value input events
+
+compatible: "zmk,input-processor-drop-zero"
+
+properties:
+  "#input-processor-cells":
+    type: int
+    required: true
+    const: 0
