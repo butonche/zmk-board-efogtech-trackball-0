@@ -1,0 +1,37 @@
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: efogdev
+      url-base: https://github.com/efogdev
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: "v0.3.0"
+      import: app/west.yml
+    - name: zmk-paw3395-driver
+      remote: efogdev
+      revision: "209a1f9"
+    - name: zmk-pointer-2s-mixer
+      remote: efogdev
+      revision: "ca0381f"
+    - name: zmk-axis-clamper
+      remote: efogdev
+      revision: "637719f"
+    - name: zmk-report-rate-limit
+      remote: efogdev
+      revision: "5a6e29a"
+    - name: zmk-ec11-ish-driver
+      remote: efogdev
+      revision: "a539bed"
+    - name: zmk-acceleration-curves
+      remote: efogdev
+      revision: "f19dcb8"
+    - name: zmk-input-processor-rotate-plane
+      remote: efogdev
+      revision: "84e508a"
+    - name: zmk-runtime-config
+      remote: efogdev
+      revision: "e173b5e"
+  self:
+    path: config

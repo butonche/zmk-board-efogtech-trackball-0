@@ -1,0 +1,30 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/p2sm.h>
+
+#define TWIST_MULTIPLIER   1
+#define TWIST_DIVISOR      10
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            display-name = "Default";
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_VOL_UP C_VOL_DN>;
+            bindings = <
+                &none &none &none &none
+                &none &none
+                &sens P2SM_INC 1 &sens P2SM_DEC 1
+                &none &none &none &none
+            >;
+        };
+    };
+
+    trackball {
+        input-processors = <&zip_scroll_scaler TWIST_MULTIPLIER TWIST_DIVISOR>,
+                           <&zip_pointer_accel>, <&zip_scroll_accel>,
+                           <&zip_rotate_pointer>, <&zip_rotate_scroll>,
+                           <&zip_ble_report_rate_limit>;
+    };
+};
