@@ -53,7 +53,7 @@
 			feedback-duration = <150>;
 		};
 	};
-	
+
 	split_inputs {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -61,7 +61,8 @@
 			compatible = "zmk,input-split";
 			reg = <0>;
 			device = <&zip_2s_mixer>;
-			input-processors = <&zip_drop_zero>;
+			input-processors = <&zip_pointer_accel>, <&zip_scroll_accel>,
+			<&zip_drop_zero>;
 		};
 	};
 
