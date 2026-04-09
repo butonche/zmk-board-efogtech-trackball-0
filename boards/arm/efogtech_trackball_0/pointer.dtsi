@@ -62,6 +62,7 @@
 			reg = <0>;
 			device = <&zip_2s_mixer>;
 			input-processors = <&zip_pointer_accel>, <&zip_scroll_accel>,
+			<&zip_ble_report_rate_limit>,
 			<&zip_drop_zero>;
 		};
 	};
